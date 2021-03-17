@@ -1,0 +1,1 @@
+Estrutura React para o projeto
