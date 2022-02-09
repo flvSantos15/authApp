@@ -15,7 +15,9 @@ export default function Dashboard(){
 
   return(
     <Flex p='5'>
-      <Text fontSize='2xl' fontWeight='bold' color='#fff'>Dashboard: {user?.email}</Text>
+      <Text fontSize='2xl' fontWeight='bold' color='#fff'>
+        Dashboard: {user?.email}
+      </Text>
     </Flex>
   )
 }

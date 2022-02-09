@@ -16,7 +16,7 @@ type SignInCredencials = {
 
 type AuthContextData = {
   signIn(credenciais: SignInCredencials): Promise<void>
-  user: User
+  user: User | undefined
   isAuthenticated: boolean;
 }
 
@@ -57,18 +57,15 @@ export function AuthProvider({ children }: AuthProviderProps) {
       const {token, refreshToken, permissions, roles} = response.data
 
       //nome da aplcc nextauth.token
-      // setCookie(undefined, 'nextauth.token', token, {
-      //   //qnt tmp quero deixar o token salvo
-      //   maxAge: 60 * 60 * 24 * 30, //30 days
-      //   //quais caminhos da aplicc vai ter acesso a esse cookie
-      //   //se deixar so / qqr pg vai ter acesso
-      //   //se deixar /pagina so esse pg t acesso
-      //   path: '/'
-      // })
-      // setCookie(undefined, 'nextauth.refreshToken', refreshToken, {
-      //   maxAge: 60 * 60 * 24 * 30,
-      //   path: '/'
-      // })
+      setCookie(undefined, 'nextauth.token', token, {
+        maxAge: 60 * 60 * 24 * 30, //30 days
+        //se deixar so / qqr pg vai ter acesso
+        path: '/'
+      })
+      setCookie(undefined, 'nextauth.refreshToken', refreshToken, {
+        maxAge: 60 * 60 * 24 * 30,
+        path: '/'
+      })
 
       setUser({
         email,
