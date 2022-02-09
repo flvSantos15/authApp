@@ -41,14 +41,28 @@ api.interceptors.response.use(response => {
           })
   
           api.defaults.headers.common['Authorization'] = `Bearer ${token}`
+
+          faileRequestQueue.forEach(request => request.onSuccess(token))
+          faileRequestQueue = []
+        }).catch(err => {
+          faileRequestQueue.forEach(request => request.onFailure(err))
+          faileRequestQueue = []
+        }).finally(() => {
+          isRefreshing = false
         })
       }
       return new Promise((resolve, reject) => {
         faileRequestQueue.push({
           onSuccess: (token: string) => {
-
+            if(!originalConfig?.headers){
+              return
+            }
+            originalConfig.headers['Authorization'] = `Bearer ${token}`
+            resolve(api(originalConfig))
           },
-          onFailure: () => {}
+          onFailure: (err: AxiosError) => {
+            reject(err)
+          }
         })
       })
     }else{
