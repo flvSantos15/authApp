@@ -2,6 +2,8 @@ import axios, { AxiosError } from 'axios'
 import { parseCookies, setCookie } from 'nookies'
 
 let cookies = parseCookies()
+let isRefreshing = false
+let faileRequestQueue = []
 
 export const api = axios.create({
   baseURL: 'http://localhost:3333',
@@ -18,22 +20,36 @@ api.interceptors.response.use(response => {
       cookies = parseCookies()
 
       const { 'nextauth.refreshToken': refreshToken } = cookies
+      const originalConfig = error.config
+      //parei no 5:00 da fila de requisições
 
-      api.post('/refresh', {
-        refreshToken,
-      }).then(response => {
-        const { token } = response.data
+      if(!isRefreshing){
+        isRefreshing = true
 
-        setCookie(undefined, 'nextauth.token', token, {
-          maxAge: 60 * 60 * 24 * 30,
-          path: '/'
+        api.post('/refresh', {
+          refreshToken,
+        }).then(response => {
+          const { token } = response.data
+  
+          setCookie(undefined, 'nextauth.token', token, {
+            maxAge: 60 * 60 * 24 * 30,
+            path: '/'
+          })
+          setCookie(undefined, 'nextauth.refreshToken', response.data.refreshToken, {
+            maxAge: 60 * 60 * 24 * 30,
+            path: '/'
+          })
+  
+          api.defaults.headers.common['Authorization'] = `Bearer ${token}`
         })
-        setCookie(undefined, 'nextauth.refreshToken', response.data.refreshToken, {
-          maxAge: 60 * 60 * 24 * 30,
-          path: '/'
-        })
+      }
+      return new Promise((resolve, reject) => {
+        faileRequestQueue.push({
+          onSuccess: (token: string) => {
 
-        api.defaults.headers.common['Authorization'] = `Bearer ${token}`
+          },
+          onFailure: () => {}
+        })
       })
     }else{
       //deslogar o user
