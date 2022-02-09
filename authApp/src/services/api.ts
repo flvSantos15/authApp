@@ -4,9 +4,7 @@ import { parseCookies } from 'nookies'
 let cookies = parseCookies()
 
 export const api = axios.create({
-  //no meu caso vai ser a rota de user
-  //tenho q ver como vai ficar duas rotas no api
-  baseURL: 'https://localhost:3333',
+  baseURL: 'http://localhost:3333',
   // headers: {
   //   Authorization: `Bearer ${cookies['nextauth.token']}`
   // }

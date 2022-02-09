@@ -49,11 +49,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   async function signIn({ email, password }: SignInCredencials) {
     try {
-      // const response = await api.post('sessions', {
-      //   email,
-      //   password
-      // })
-      console.log({email, password})
+      const response = await api.post('sessions', {
+        email,
+        password
+      })
+      console.log(response.data)
       // const {token, refreshToken, permissions, roles} = response.data
 
       //nome da aplcc nextauth.token
