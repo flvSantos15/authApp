@@ -53,8 +53,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
         email,
         password
       })
-      console.log(response.data)
-      // const {token, refreshToken, permissions, roles} = response.data
+
+      const {token, refreshToken, permissions, roles} = response.data
 
       //nome da aplcc nextauth.token
       // setCookie(undefined, 'nextauth.token', token, {
@@ -70,16 +70,15 @@ export function AuthProvider({ children }: AuthProviderProps) {
       //   path: '/'
       // })
 
-
-      // setUser({
-      //   email,
-      //   permissions,
-      //   roles
-      // })
+      setUser({
+        email,
+        permissions,
+        roles
+      })
       // api.defaults.headers['Authorization'] = `Bearer ${token}`
       // api.defaults.headers['Authorization'] = `Bearer ${token}`
       
-      // Router.push('/dashboard')
+      Router.push('/Dashboard')
     } catch(err) {
       console.log(err)
     }
