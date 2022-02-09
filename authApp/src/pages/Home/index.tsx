@@ -12,7 +12,6 @@ import { AuthContext } from '../../context/AuthContext'
 import { api } from '../../services/api'
 
 export default function Home() {
-  //estados dos inputs
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
 
@@ -22,9 +21,6 @@ export default function Home() {
   //   api.get('/repos').then(res => console.log(res.data))
   // }, [])
 
-
-  //funcção de submit chamada no form
-  //preciso fazer async await por causa do context
   async function handleSubmit(event: FormEvent) {
     event.preventDefault()
 
@@ -33,7 +29,6 @@ export default function Home() {
       password
     }
     
-    //passo o data pra function do context
     await signIn(data)
     setEmail('')
     setPassword('')
