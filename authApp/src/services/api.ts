@@ -5,10 +5,9 @@ let cookies = parseCookies()
 
 export const api = axios.create({
   baseURL: 'http://localhost:3333',
-  // headers: {
-  //   Authorization: `Bearer ${cookies['nextauth.token']}`
-  // }
 })
+
+api.defaults.headers.common['Authorization'] = `Bearer ${cookies['nextauth.token']}`
 
 // api.interceptors.response.use(response => {
 //   return response

@@ -30,22 +30,18 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const [user, setUser] = useState<User>()
   const isAuthenticated = !!user
 
-  // useEffect(() => {
-  //   const { 'nextauth.token': token } = parseCookies()
+  useEffect(() => {
+    const { 'nextauth.token': token } = parseCookies()
 
-  //   //talez eu não tenha um token na app
-  //   if(token){
-  //     //rota users são todos os users
-  //     //quero veirificar apenas um
-  //     //must do a knd de map p verify only o user q qr acessar
-  //     api.get('/users').then(response => {
-  //       //talvez n tnh essas info no data
-  //       const { email, permissions, roles } = response.data
+    //talez eu não tenha um token na app
+    if(token){
+      api.get('/me').then(response => {
+        const { email, permissions, roles } = response.data
 
-  //       setUser({ email, permissions, roles })
-  //     })
-  //   }
-  // }, [])
+        setUser({ email, permissions, roles })
+      })
+    }
+  }, [])
 
   async function signIn({ email, password }: SignInCredencials) {
     try {
@@ -72,8 +68,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
         permissions,
         roles
       })
-      // api.defaults.headers['Authorization'] = `Bearer ${token}`
-      // api.defaults.headers['Authorization'] = `Bearer ${token}`
+
+      api.defaults.headers.common['Authorization'] = `Bearer ${token}`
       
       Router.push('/Dashboard')
     } catch(err) {

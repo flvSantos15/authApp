@@ -5,13 +5,12 @@ import { api } from '../services/api'
 
 export default function Dashboard(){
   const { user } = useContext(AuthContext)
-
-  //user.id
-  // useEffect(() => {
-  //   api.get(`/users/:${user.email}/projects?trackingSessions=true`).then(response => {
-  //     console.log(response.data)
-  //   })
-  // }, [])
+  
+  useEffect(() => {
+    api.get(`/me`).then(response => {
+      console.log(response)
+    })
+  }, [])
 
   return(
     <Flex p='5'>
