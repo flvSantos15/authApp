@@ -7,19 +7,17 @@ import {
   Input, 
   FormControl, 
 } from '@chakra-ui/react'
-import { FormEvent, useState, useEffect, useContext } from 'react'
+import { GetServerSideProps } from 'next'
+import { FormEvent, useState, useContext } from 'react'
+import { parseCookies } from 'nookies'
+
 import { AuthContext } from '../../context/AuthContext'
-import { api } from '../../services/api'
 
 export default function Home() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
 
   const { signIn } = useContext(AuthContext)
-
-  // useEffect(() => {
-  //   api.get('/repos').then(res => console.log(res.data))
-  // }, [])
 
   async function handleSubmit(event: FormEvent) {
     event.preventDefault()
@@ -126,4 +124,21 @@ export default function Home() {
       </Flex>
     </Flex>
   )
+}
+
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  const cookies = parseCookies(ctx)
+
+  if(!cookies['nextauth.token']){
+    return{
+      redirect: {
+        destination: '/Dashboard',
+        permanent: false
+      }
+    }
+  }
+
+  return{
+    props: {}
+  }
 }
