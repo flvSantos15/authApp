@@ -48,6 +48,10 @@ api.interceptors.response.use(response => {
         }).catch(err => {
           faileRequestQueue.forEach(request => request.onFailure(err))
           faileRequestQueue = []
+
+          if(process.browser){
+            signOut()
+          }
         }).finally(() => {
           isRefreshing = false
         })
@@ -68,7 +72,9 @@ api.interceptors.response.use(response => {
       })
     }else{
       //deslogar o user
-      signOut()
+      if(process.browser){
+        signOut()
+      }
     }
   }
 
