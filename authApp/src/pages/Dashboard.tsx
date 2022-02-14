@@ -1,7 +1,8 @@
 import {Flex, Text} from '@chakra-ui/react'
 import {useContext, useEffect} from 'react'
 import { AuthContext } from '../context/AuthContext'
-import { api } from '../services/api'
+import { setupApiClient } from '../services/api'
+import { api } from '../services/apiClient'
 import { withSSRAuth } from '../utils/withSSRAuth'
 
 export default function Dashboard(){
@@ -14,7 +15,7 @@ export default function Dashboard(){
   }, [])
 
   return(
-    <Flex p='5'>
+    <Flex p='5' bg='#222f2b'>
       <Text fontSize='2xl' fontWeight='bold' color='#fff'>
         Dashboard: {user?.email}
       </Text>
@@ -22,10 +23,9 @@ export default function Dashboard(){
   )
 }
 
-//pare no 7:00 validando autenticação server
-
 export const getServerSideProps = withSSRAuth(async (ctx) => {
-  const response = await api.get('/me')
+  const apiClient = setupApiClient(ctx)
+  const response = await apiClient.get('/me')
   console.log(response.data)
   return{
     props: {}
