@@ -14,8 +14,6 @@ export default function Dashboard(){
   //   .catch(err => console.log(err))
   // }, [])
 
-  // logo vamos criar + coisas
-
   return(
     <Flex p='5' bg='#222f2b'>
       <Text fontSize='2xl' fontWeight='bold' color='#fff'>
