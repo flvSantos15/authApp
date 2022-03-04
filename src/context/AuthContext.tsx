@@ -2,6 +2,7 @@ import { createContext, ReactNode, useEffect, useState } from "react"
 import { setCookie, parseCookies, destroyCookie } from 'nookies'
 import Router from 'next/router'
 import { api } from "../services/apiClient"
+import { BreadcrumbLink } from "@chakra-ui/react"
 
 type User = {
   email: string
@@ -15,7 +16,8 @@ type SignInCredencials = {
 }
 
 type AuthContextData = {
-  signIn(credenciais: SignInCredencials): Promise<void>
+  signIn: (credenciais: SignInCredencials) => Promise<void>
+  signOut: () => void
   user: User | undefined
   isAuthenticated: boolean;
 }
@@ -26,9 +28,13 @@ type AuthProviderProps = {
 
 export const AuthContext = createContext({} as AuthContextData)
 
+let authChannel: BroadcastChannel
+
 export function signOut(){
   destroyCookie(undefined, 'nextauth.token')
   destroyCookie(undefined, 'nextauth.refreshToken')
+
+  authChannel.postMessage('signOut')
 
   Router.push('/')
 }
@@ -36,6 +42,22 @@ export function signOut(){
 export function AuthProvider({ children }: AuthProviderProps) {
   const [user, setUser] = useState<User>()
   const isAuthenticated = !!user
+
+  useEffect(() => {
+    authChannel = new BroadcastChannel('auth')
+    authChannel.onmessage = (message) => {
+      switch (message.data){
+        case 'signOut':
+          signOut();
+          break;
+        case 'signIn':
+          Router.push('/Dashboard')
+          break;
+        default:
+          break;
+      }
+    }
+  }, [])
 
   useEffect(() => {
     const { 'nextauth.token': token } = parseCookies()
@@ -82,13 +104,14 @@ export function AuthProvider({ children }: AuthProviderProps) {
       api.defaults.headers.common['Authorization'] = `Bearer ${token}`
       
       Router.push('/Dashboard')
+      authChannel.postMessage('signIn')
     } catch(err) {
       console.log(err)
     }
   }
 
   return (
-    <AuthContext.Provider value={{ signIn, isAuthenticated, user }}>
+    <AuthContext.Provider value={{ signIn, signOut, isAuthenticated, user }}>
       {children}
     </AuthContext.Provider>
   )
