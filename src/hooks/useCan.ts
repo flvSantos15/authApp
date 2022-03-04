@@ -6,7 +6,7 @@ interface UseCanProps {
   roles?: string[]
 }
 
-export function UseCan({ permissions, roles}: UseCanProps){
+export function useCan({ permissions, roles}: UseCanProps){
   const { user, isAuthenticated } = useContext(AuthContext)
 
   if(!isAuthenticated){
